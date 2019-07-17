@@ -20,7 +20,10 @@ class MembersView(APIView):
         # fill this method and update the return
         if member_id is not None:
             result = family.get_member(member_id)
-            return Response(result, status=status.HTTP_200_OK)
+            if result is None:
+                return Response("No existe este integrante", status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response(result, status=status.HTTP_200_OK)
         else:
             result = family.get_all_members()
             return Response(result, status=status.HTTP_200_OK)
@@ -34,13 +37,14 @@ class MembersView(APIView):
         else:
             return Response("error", status=status.HTTP_400_BAD_REQUEST)
 
-
-
     def put(self, request, member_id=None):
         # fill this method and update the return
         result = None
         return Response(result, status=status.HTTP_200_OK)
 
     def delete(self, request, member_id=None):
-        # fill this method and update the return
-        return Response({"status": "ok"}, status=status.HTTP_200_OK)
+        if member_id is not None:
+            result = family.delete_member(member_id)
+            return Response(result, status=status.HTTP_200_OK)
+        else:
+            return Response("No enviaste el id a eliminar", status=status.HTTP_400_BAD_REQUEST)
